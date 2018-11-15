@@ -8,11 +8,15 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class Main {
+
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
         final var properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "filter-users-by-color");
@@ -24,9 +28,11 @@ public class Main {
         properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
         final var streamsBuilder = new StreamsBuilder();
-        KStream<UserKey, User> users = streamsBuilder.stream("users");
-        KStream<UserKey, User> filteredUsers = users.filter((k, v) -> "red".equalsIgnoreCase(v.getFavoriteColor()));
-        filteredUsers.to("users-who-like-red");
+        streamsBuilder.<UserKey, User>stream("users")
+                .peek((k, v) -> log.info("Received user {}", v))
+                .filter((k, v) -> "red".equalsIgnoreCase(v.getFavoriteColor()))
+                .peek((k, v) -> log.info("User passed filtering {}", v))
+                .to("users-who-like-red");
 
         final var kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         kafkaStreams.cleanUp(); // do not do this on production

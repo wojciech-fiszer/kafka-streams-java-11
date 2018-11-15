@@ -5,7 +5,6 @@ import com.github.wojciechfiszer.kafkastreamsjava11.filterusersbycolor.avro.User
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
@@ -20,7 +19,7 @@ public class InsertUsers {
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, SpecificAvroSerializer.class);
         properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
 
-        Producer<UserKey, User> producer = new KafkaProducer<>(properties);
+        final var producer = new KafkaProducer<UserKey, User>(properties);
         final var names = List.of("John", "Ann", "Mark", "Stephen", "Julia");
         final var colors = List.of("red", "blue", "green", "yellow");
 

@@ -28,7 +28,7 @@
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
         <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
-        <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
         <asm.version>6.2</asm.version>
 
         <kafka.version>2.0.1</kafka.version>
@@ -103,19 +103,14 @@
                     <version>${maven-jar-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>${maven-assembly-plugin.version}</version>
-                    <configuration>
-                        <descriptorRefs>
-                            <descriptorRef>jar-with-dependencies</descriptorRef>
-                        </descriptorRefs>
-                    </configuration>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
                     <executions>
                         <execution>
-                            <id>make-assembly</id>
+                            <id>copy-dependencies</id>
                             <phase>package</phase>
                             <goals>
-                                <goal>single</goal>
+                                <goal>copy-dependencies</goal>
                             </goals>
                         </execution>
                     </executions>
